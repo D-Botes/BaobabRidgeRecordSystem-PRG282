@@ -5,6 +5,7 @@ namespace BaobabRidgeRecordSystem
         public Form1()
         {
             InitializeComponent();
+
         }
     }
 }

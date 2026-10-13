@@ -91,5 +91,42 @@ namespace BaobabRidgeRecordSystem
 
 
         }
+
+        // This method appends one animal as a new line a the end of animals.txt
+        public static bool AppendAnimal(Animal animal)
+        {
+            try
+            {
+
+                string line = animal.ToFileLine();
+                string text = line + Environment.NewLine;
+                string existing = "";
+
+                // Check if file exists
+                if (File.Exists(FilePath))
+                {
+                    existing = File.ReadAllText(FilePath);
+                }
+
+                // Checks if file is empty
+                if (existing.Length > 0 && !existing.EndsWith("\n"))
+                {
+                    text = Environment.NewLine + text;
+                }
+                File.AppendAllText(FilePath, text);
+
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("You do not have permission to edit animals.txt");
+                return false;
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("File is currently in use or unavailable");
+                return false;
+            }
+        }
     }
 }

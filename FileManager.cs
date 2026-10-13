@@ -128,5 +128,36 @@ namespace BaobabRidgeRecordSystem
                 return false;
             }
         }
+
+        // This method is used to overwrite animals.txt
+        public static bool RewriteAll(List<Animal> animals)
+        {
+            try
+            {
+                // Empty list to store the lines
+                List<string> list = new List<string>();
+
+                // Loops each animal and writes to the empty list
+                foreach (Animal animal in animals)
+                {
+                    list.Add(animal.ToFileLine());
+                }
+
+                // Writes the new list
+                File.WriteAllLines(FilePath, list);
+
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("You do not have permission to rewrite animals.txt");
+                return false;
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("File is currently in use or unavailable");
+                return false;
+            }
+        }
     }
 }

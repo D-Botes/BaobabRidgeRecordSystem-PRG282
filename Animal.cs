@@ -21,10 +21,12 @@
         public string AnimalId { get => animalId; private set => animalId = value; }
         public string Name { get => name; set => name = value; }
         public string Species { get => species; set => species = value; }
-        public string Status { get => status; private set => status = value; }
-        public string HousingUnit { get => housingUnit; private set => housingUnit = value; }
         public int Age { get => age; set => age = value; }
         public int RecoveryScore { get => recoveryScore; set => recoveryScore = value; }
+        public string Status { get => status; private set => status = value; }
+        public string HousingUnit { get => housingUnit; private set => housingUnit = value; }
+
+
 
 
 

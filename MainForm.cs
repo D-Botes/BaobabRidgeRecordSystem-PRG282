@@ -359,7 +359,7 @@ namespace BaobabRidgeRecordSystem
                 return;
             }
 
-            // Remove it from memory, then save the updated list to animals.txt.
+            // Remove it from memory, then save the updated list to the text file.
             animals.RemoveAt(iIndex);
 
             if (!FileManager.RewriteAll(animals))

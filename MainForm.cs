@@ -18,6 +18,8 @@ namespace BaobabRidgeRecordSystem
             btnSave.Click += btnSave_Click;
             btnClear.Click += btnClear_Click;
             btnAdd.Click += btnAdd_Click;
+            btnDelete.Click += btnDelete_Click;
+            btnGenerate.Click += btnGenerate_Click;
         }
         //Update feature
 
@@ -315,6 +317,97 @@ namespace BaobabRidgeRecordSystem
             {
                 MessageBox.Show($"{skipped} line(s) in animals.txt were invalid and were skipped");
             }
+        }
+
+        //Delete feature
+        private void btnDelete_Click(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(loadedId))
+            {
+                MessageBox.Show(
+                    "Load an animal first by clicking its row or searching for its ID.",
+                    "Delete Animal",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            int iIndex = FindAnimalIndex(loadedId);
+
+            if (iIndex < 0)
+            {
+                MessageBox.Show(
+                    "That animal could not be found.",
+                    "Delete Animal",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                RefreshGrid();
+                ClearForm();
+                return;
+            }
+
+            Animal animal = animals[iIndex];
+
+            DialogResult confirm = MessageBox.Show(
+                $"Are you sure you want to delete {animal.AnimalId} ({animal.Name})?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes)
+            {
+                return;
+            }
+
+            // Remove it from memory, then save the updated list to animals.txt.
+            animals.RemoveAt(iIndex);
+
+            if (!FileManager.RewriteAll(animals))
+            {
+                // Restore it in memory if saving failed.
+                animals.Insert(iIndex, animal);
+                return;
+            }
+
+            RefreshGrid();
+            ClearForm();
+
+            MessageBox.Show(
+                $"{animal.AnimalId} was deleted.",
+                "Animal Deleted",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
+        //Summary feature
+        private void btnGenerate_Click(object? sender, EventArgs e)
+        {
+            // Reload first so the summary reflects the current file contents.
+            RefreshGrid();
+
+            int iTotal = animals.Count;
+
+            lblTotalValue.Text = iTotal.ToString();
+
+            if (iTotal == 0)
+            {
+                lblAvgAgeValue.Text = "N/A";
+                lblAvgScoreValue.Text = "N/A";
+            }
+            else
+            {
+                double averageAge = animals.Average(a => a.Age);
+                double averageScore = animals.Average(a => a.RecoveryScore);
+
+                lblAvgAgeValue.Text = averageAge.ToString("F1");
+                lblAvgScoreValue.Text = averageScore.ToString("F1");
+            }
+
+            lblCriticalValue.Text = animals.Count(a => a.Status == Classifier.Critical).ToString();
+            lblSeriousValue.Text = animals.Count(a => a.Status == Classifier.Serious).ToString();
+            lblStableValue.Text = animals.Count(a => a.Status == Classifier.Stable).ToString();
+            lblRecoveryValue.Text = animals.Count(a => a.Status == Classifier.Recovering).ToString();
+            lblReleaseReadyValue.Text = animals.Count(a => a.Status == Classifier.ReleaseReady).ToString();
         }
     }
 }

@@ -382,7 +382,7 @@ namespace BaobabRidgeRecordSystem
         //Summary feature
         private void btnGenerate_Click(object? sender, EventArgs e)
         {
-            // Reload first so the summary reflects the current file contents.
+            // Reload first so the summary reflects the current file data.
             RefreshGrid();
 
             int iTotal = animals.Count;

@@ -29,6 +29,7 @@ namespace BaobabRidgeRecordSystem
             btnSave.Enabled = editing;
         }
 
+        //Load animal data to form
         private void LoadIntoForm(Animal animal)
         {
             txtAnimalID.Text = animal.AnimalId;
@@ -100,6 +101,7 @@ namespace BaobabRidgeRecordSystem
             }
         }
 
+        //Search Operation
         private void btnSearch_Click(object? sender, EventArgs e)
         {
             string id = txtSearch.Text.Trim();

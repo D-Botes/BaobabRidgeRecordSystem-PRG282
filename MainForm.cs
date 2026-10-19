@@ -6,6 +6,8 @@ namespace BaobabRidgeRecordSystem
     {
         // List used to store the animals
         private List<Animal> animals = new List<Animal>();
+
+        //string for search feature
         private string loadedId ="";
         public MainForm()
         {
@@ -19,6 +21,7 @@ namespace BaobabRidgeRecordSystem
         }
         //Update feature
 
+        //Edit mode toggle
         private void SetEditMode(bool editing)
         {
             txtAnimalID.ReadOnly = editing;

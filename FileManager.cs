@@ -7,6 +7,7 @@ namespace BaobabRidgeRecordSystem
         // Path to animals.txt, AppContext.BaseDirectory is a property that gets the folder where the .exe is running from
         // Path.Combine joins the folder and filename so we never build paths by hand
         private static readonly string FilePath = Path.Combine(AppContext.BaseDirectory, "animals.txt");
+        private static readonly string SummaryPath = Path.Combine(AppContext.BaseDirectory, "summary.txt");
 
         // This method is used to load the animals.txt
         public static (List<Animal> Animals, int Skipped) Load()
@@ -156,6 +157,29 @@ namespace BaobabRidgeRecordSystem
             catch (IOException)
             {
                 MessageBox.Show("File is currently in use or unavailable");
+                return false;
+            }
+        }
+
+        // Overwrites summary.txt which is stored along with animals.txt
+        // Returns true if saved, false if a file error occured
+        public static bool WriteSummary(string reportText)
+        {
+            try
+            {
+                File.WriteAllText(SummaryPath, reportText);
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("You do not have permission to write summary.txt",
+                    "File Access Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("Summary.txt is open in another program or unavailable. Close it and try again",
+                    "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }

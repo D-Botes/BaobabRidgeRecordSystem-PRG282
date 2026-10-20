@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 
 namespace BaobabRidgeRecordSystem
 {
@@ -8,7 +9,7 @@ namespace BaobabRidgeRecordSystem
         private List<Animal> animals = new List<Animal>();
 
         //string for search feature
-        private string loadedId ="";
+        private string loadedId = "";
         public MainForm()
         {
             InitializeComponent();
@@ -221,7 +222,7 @@ namespace BaobabRidgeRecordSystem
             // Refresh grid
             dgvAnimals.DataSource = null;
             animals = result.Animals;
-                        
+
             dgvAnimals.DataSource = animals;
             dgvAnimals.Columns["AnimalId"].HeaderText = "Animal ID";
             dgvAnimals.Columns["RecoveryScore"].HeaderText = "Recovery Score";
@@ -315,7 +316,8 @@ namespace BaobabRidgeRecordSystem
             // Display how many lines were skipped
             if (skipped > 0)
             {
-                MessageBox.Show($"{skipped} line(s) in animals.txt were invalid and were skipped");
+                MessageBox.Show($"{skipped} line(s) in animals.txt were invalid and were skipped", "Info",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -386,28 +388,57 @@ namespace BaobabRidgeRecordSystem
             RefreshGrid();
 
             int iTotal = animals.Count;
+            string avgAge = "N/A";
+            string avgScore = "N/A";
 
             lblTotalValue.Text = iTotal.ToString();
 
-            if (iTotal == 0)
-            {
-                lblAvgAgeValue.Text = "N/A";
-                lblAvgScoreValue.Text = "N/A";
-            }
-            else
-            {
-                double averageAge = animals.Average(a => a.Age);
-                double averageScore = animals.Average(a => a.RecoveryScore);
 
-                lblAvgAgeValue.Text = averageAge.ToString("F1");
-                lblAvgScoreValue.Text = averageScore.ToString("F1");
+
+            if (iTotal > 0)
+            {
+                avgAge = animals.Average(a => a.Age).ToString("F2", CultureInfo.InvariantCulture);
+                avgScore = animals.Average(a => a.RecoveryScore).ToString("F2", CultureInfo.InvariantCulture);
             }
 
-            lblCriticalValue.Text = animals.Count(a => a.Status == Classifier.Critical).ToString();
-            lblSeriousValue.Text = animals.Count(a => a.Status == Classifier.Serious).ToString();
-            lblStableValue.Text = animals.Count(a => a.Status == Classifier.Stable).ToString();
-            lblRecoveryValue.Text = animals.Count(a => a.Status == Classifier.Recovering).ToString();
-            lblReleaseReadyValue.Text = animals.Count(a => a.Status == Classifier.ReleaseReady).ToString();
+            lblAvgAgeValue.Text = avgAge;
+            lblAvgScoreValue.Text = avgScore;
+
+            int critical = animals.Count(a => a.Status == Classifier.Critical);
+            lblCriticalValue.Text = critical.ToString();
+            int serious = animals.Count(a => a.Status == Classifier.Serious);
+            lblSeriousValue.Text = serious.ToString();
+            int stable = animals.Count(a => a.Status == Classifier.Stable);
+            lblStableValue.Text = stable.ToString();
+            int recovery = animals.Count(a => a.Status == Classifier.Recovering);
+            lblRecoveryValue.Text = recovery.ToString();
+            int release = animals.Count(a => a.Status == Classifier.ReleaseReady);
+            lblReleaseReadyValue.Text = release.ToString();
+
+            // Build summary.txt
+            StringBuilder sb = new StringBuilder();
+            string line = new string('-', 40);
+
+            sb.AppendLine("BAOBAB RIDGE WILDLIFE REHABILITATION CENTRE");
+            sb.AppendLine("ANIMAL SUMMARY REPORT");
+            sb.AppendLine($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm}");
+            sb.AppendLine(line);
+            sb.AppendLine($"{"Total animals:",-25}{iTotal}");
+            sb.AppendLine($"{"Average age (years):",-25}{avgAge}");
+            sb.AppendLine($"{"Average recovery score:",-25}{avgScore}");
+            sb.AppendLine(line);
+            sb.AppendLine("Animals per status:");
+            sb.AppendLine($"{"  Critical:",-25}{critical}");
+            sb.AppendLine($"{"  Serious:",-25}{serious}");
+            sb.AppendLine($"{"  Stable:",-25}{stable}");
+            sb.AppendLine($"{"  Recovering:",-25}{recovery}");
+            sb.AppendLine($"{"  Release Ready:",-25}{release}");
+
+            if (FileManager.WriteSummary(sb.ToString()))
+            {
+                MessageBox.Show("Summary saved to summary.txt", "Summary",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ PRG282 group project: a C# Windows Forms (.NET 8) application for recording anim
 | Name | Student number | 
 |---|---|---|
 | Dylan Botes | 603570 | 
-| | | 
+|Tendai Vashiko | 604512| 
 | | | 
 | | | 
 

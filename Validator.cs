@@ -12,136 +12,134 @@ namespace BaobabRidgeRecordSystem
     
     public static class Validator
     {
-        
-        // Validates an Animal ID, trims whitespace and converts it to uppercase
-        // Checks that it matches WR- followed by exactly four digits.
-       
+        // Validates the Animal ID and converts it to uppercase and the ID must start with WR- followed by exactly four digits.
         public static bool ValidateAnimalId(
             string input,
             out string cleanedValue,
-            out string errorMessage)
-        {
+            out string error)
+        { 
+             //stops a crash if the input is ever null
             cleanedValue = (input ?? string.Empty).Trim().ToUpperInvariant();
-            errorMessage = string.Empty;
+            error = string.Empty;
 
-            // \A and \z force the WHOLE text to match (no extra characters before or after).
-            // [0-9] is used instead of \d so only the digits 0-9 are accepted.
+            //force the whole text to match, and only accept [0-9]
             if (!Regex.IsMatch(cleanedValue, @"\AWR-[0-9]{4}\z"))
             {
-                errorMessage =
-                    "Animal ID must start with WR- followed by exactly 4 digits.";
+                error = "Animal ID must start with WR- followed by exactly four digits (e.g. WR-0001).";
                 return false;
             }
 
             return true;
         }
 
-        
-        // Validates a name by trimming whitespace and checking its length and ensuring that it does not contain the | delimiter.
-        
+        // Validates the animal's name.
         public static bool ValidateName(
             string input,
             out string cleanedValue,
-            out string errorMessage)
+            out string error)
         {
             cleanedValue = (input ?? string.Empty).Trim();
-            errorMessage = string.Empty;
+            error = string.Empty;
 
             if (cleanedValue.Length < 1 || cleanedValue.Length > 30)
             {
-                errorMessage = "Name must contain between 1 and 30 characters.";
+                error = "Name must contain between 1 and 30 characters.";
                 return false;
             }
 
             if (cleanedValue.Contains("|"))
             {
-                errorMessage = "Name must not contain the | character.";
+                error = "Name cannot contain the | character.";
                 return false;
             }
 
             return true;
         }
 
-        // Validates a species by trimming whitespace and checking its length
-        // and ensuring that it does not contain the | delimiter.
-        
+        // Validates the animal's species.
         public static bool ValidateSpecies(
             string input,
             out string cleanedValue,
-            out string errorMessage)
+            out string error)
         {
             cleanedValue = (input ?? string.Empty).Trim();
-            errorMessage = string.Empty;
+            error = string.Empty;
 
             if (cleanedValue.Length < 1 || cleanedValue.Length > 30)
             {
-                errorMessage = "Species must contain between 1 and 30 characters.";
+                error = "Species must contain between 1 and 30 characters.";
                 return false;
             }
 
             if (cleanedValue.Contains("|"))
             {
-                errorMessage = "Species must not contain the | character.";
+                error = "Species cannot contain the | character.";
                 return false;
             }
 
             return true;
         }
 
-        
-        // Validates that Age is a whole number between 0 and 100,
-        // after trimming whitespace from the input
-
+        // Validates the animal's age.
         public static bool ValidateAge(
             string input,
             out string cleanedValue,
-            out string errorMessage)
+            out string error)
         {
             cleanedValue = (input ?? string.Empty).Trim();
-            errorMessage = string.Empty;
+            error = string.Empty;
 
-            int age;
-
-            // NumberStyles.None accepts digits only 
-            // InvariantCulture keeps the result the same on any regional setting.
-            if (!int.TryParse(cleanedValue, NumberStyles.None,
-                    CultureInfo.InvariantCulture, out age) ||
-                age < 0 || age > 100)
+            // NumberStyles.None accepts digits only
+            if (!int.TryParse(
+                cleanedValue,
+                NumberStyles.None,
+                CultureInfo.InvariantCulture,
+                out int age))
             {
-                errorMessage =
-                    "Age must be a whole number between 0 and 100.";
+                error = "Age must be a whole number containing digits only.";
                 return false;
             }
 
+            if (age < 0 || age > 100)
+            {
+                error = "Age must be between 0 and 100.";
+                return false;
+            }
+
+            // Rewrite the number in clean form so "007" becomes "7"
             cleanedValue = age.ToString(CultureInfo.InvariantCulture);
             return true;
         }
 
-      
-        // Validates that Recovery Score is a whole number between 0 and 100 after trimming whitespace from the input.
+        // Validates the animal's recovery score.
         public static bool ValidateRecoveryScore(
             string input,
             out string cleanedValue,
-            out string errorMessage)
+            out string error)
         {
             cleanedValue = (input ?? string.Empty).Trim();
-            errorMessage = string.Empty;
+            error = string.Empty;
 
-            int score;
-
-            // Same digits-only parsing as Age.
-            if (!int.TryParse(cleanedValue, NumberStyles.None,
-                    CultureInfo.InvariantCulture, out score) ||
-                score < 0 || score > 100)
+            // Same digits-only parsing as Age
+            if (!int.TryParse(
+                cleanedValue,
+                NumberStyles.None,
+                CultureInfo.InvariantCulture,
+                out int score))
             {
-                errorMessage =
-                    "Recovery Score must be a whole number between 0 and 100.";
+                error = "Recovery Score must be a whole number containing digits only.";
                 return false;
             }
 
+            if (score < 0 || score > 100)
+            {
+                error = "Recovery Score must be between 0 and 100.";
+                return false;
+            }
+
+            // Rewrite the number in clean form
             cleanedValue = score.ToString(CultureInfo.InvariantCulture);
             return true;
         }
     }
 }
-

@@ -45,7 +45,7 @@ namespace BaobabRidgeRecordSystem
             SetEditMode(true);
         }
 
-        // Returns to Add mode
+        // Returns to Add mode, clear form
         private void ClearForm()
         {
             txtAnimalID.Clear();
